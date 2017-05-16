@@ -1,0 +1,65 @@
+        /// <summary>デバッグ出力。Webクローラー</summary>
+        private void CrawlerTestButton_Click(object sender, EventArgs e)
+        {
+            var crawlConfiguration = new CrawlConfiguration {
+                MaxConcurrentThreads = 10,
+                UserAgentString = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko",
+                RobotsDotTextUserAgentString = "abot",
+                MaxPagesToCrawl = 100,
+                DownloadableContentTypes = "text/html",
+                ConfigurationExtensions = new Dictionary<string, string>(),
+                MaxRobotsDotTextCrawlDelayInSeconds = 5,
+                HttpRequestMaxAutoRedirects = 7,
+                IsHttpRequestAutoRedirectsEnabled = true,
+                MaxCrawlDepth = 20,
+                HttpServicePointConnectionLimit = 200,
+                HttpRequestTimeoutInSeconds = 15,
+                IsSslCertificateValidationEnabled = true,
+                IsExternalPageCrawlingEnabled = true,
+                IsExternalPageLinksCrawlingEnabled = false
+
+            };
+
+            PoliteWebCrawler crawler = new PoliteWebCrawler(crawlConfiguration, null, null, null, null, null, null, null, null);
+            crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
+
+            CrawlResult result = crawler.Crawl(new Uri("https://www.monotaro.com/g/00261329/"));
+            //Create an instance of the crawler and subscribe to the PageCrawlCompleted event
+
+            //エラー制御
+            if (result.ErrorOccurred)
+            {
+                textBox1.Text += "次のサイト のクロールがエラーで終了しました:"
+                    + result.RootUri.AbsoluteUri.ToString() + "\t"
+                    + result.ErrorException.Message.ToString();
+            }
+            else
+            {
+                textBox1.Text += "次のサイト のクロールが正常終了しました:"
+                    + result.RootUri.AbsoluteUri.ToString();
+            }
+
+        }
+
+        /// <summary>
+        /// 指定WEBサイトをクロールしtxtファイル出力する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">crawlerのイベントハンドラ</param>
+        private void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        {
+            string crawledText="";
+            string crawledUri = "";
+
+            CrawledPage crawledPage = e.CrawledPage;
+            
+            crawledText += crawledPage.Content.Text;    //取得したHTMLソース
+            crawledUri += crawledPage.Uri.AbsoluteUri;//取得したUri
+
+
+            CsvTsvConvert crawledTextConvert = new CsvTsvConvert();
+            crawledTextConvert.ExportTSVFileName = @"..\..\..\ExportCrawledText.txt";
+            crawledTextConvert.WriteTsv(crawledText);
+            crawledTextConvert.ExportTSVFileName = @"..\..\..\ExportCrawledUri.txt";
+            crawledTextConvert.WriteTsv(crawledUri);
+        }
