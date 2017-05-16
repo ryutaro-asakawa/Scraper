@@ -1,0 +1,4 @@
+<map id="Scraper.Form1.BaseClass" name="Scraper.Form1.BaseClass">
+<area shape="rect" id="node2" href="$class_scraper_1_1_form1_1_1_monotaro_scraping.html" title="モノタロウを対象にスクレイプします。" alt="" coords="5,88,221,115"/>
+<area shape="rect" id="node3" href="$class_scraper_1_1_form1_1_1_orange_book_scraping.html" title="オレンジブックを対象にスクレイプします。" alt="" coords="247,81,431,122"/>
+</map>
